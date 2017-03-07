@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.msf4j.internal.websocket.EndpointsRegistryImpl;
-import org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints.TestEndpoinWithOnTextError;
-import org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints.TestEndpointWithOnBinaryError;
-import org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints.TestEndpointWithOnCloseError;
-import org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints.TestEndpointWithOnError;
-import org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints.TestEndpointWithOnOpenError;
-import org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints.TestEndpointWithOnPongError;
-import org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints.TestEndpointWithServerEndpointError;
+import org.wso2.msf4j.websocket.endpoint.error.TestEndpoinWithOnTextError;
+import org.wso2.msf4j.websocket.endpoint.error.TestEndpointWithOnBinaryError;
+import org.wso2.msf4j.websocket.endpoint.error.TestEndpointWithOnCloseError;
+import org.wso2.msf4j.websocket.endpoint.error.TestEndpointWithOnError;
+import org.wso2.msf4j.websocket.endpoint.error.TestEndpointWithOnOpenError;
+import org.wso2.msf4j.websocket.endpoint.error.TestEndpointWithOnPongError;
+import org.wso2.msf4j.websocket.endpoint.error.TestEndpointWithServerEndpointError;
 import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
 import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
 
@@ -38,7 +38,7 @@ import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
  */
 public class ExceptionTesting {
 
-    private final static Logger logger = LoggerFactory.getLogger(ExceptionTesting.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionTesting.class);
 
     private EndpointsRegistryImpl endpointsRegistry = EndpointsRegistryImpl.getInstance();
 
@@ -57,38 +57,37 @@ public class ExceptionTesting {
     @Test(description = "Test the expected exceptions for onOpen",
           expectedExceptions = WebSocketMethodParameterException.class)
     public void testOnOpen() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
-        TestEndpointWithOnOpenError endpoint = new TestEndpointWithOnOpenError();
-        endpointsRegistry.addEndpoint(endpoint);
+        endpointsRegistry.addEndpoint(new TestEndpointWithOnOpenError());
     }
 
-//    @Test(description = "Test the expected exceptions for onClose",
-//          expectedExceptions = WebSocketMethodParameterException.class)
-//    public void testOnClose() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
-//        endpointsRegistry.addEndpoint(new TestEndpointWithOnCloseError());
-//    }
-//
-//    @Test(description = "Test the expected exceptions for onTextMessage",
-//          expectedExceptions = WebSocketMethodParameterException.class)
-//    public void testOnTextMessage() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
-//        endpointsRegistry.addEndpoint(new TestEndpoinWithOnTextError());
-//    }
-//
-//    @Test(description = "Test the expected exceptions for onBinaryMessage",
-//          expectedExceptions = WebSocketMethodParameterException.class)
-//    public void testOnBinaryMessage() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
-//        endpointsRegistry.addEndpoint(new TestEndpointWithOnBinaryError());
-//    }
-//
-//    @Test(description = "Test the expected exceptions for onPongMessage",
-//          expectedExceptions = WebSocketMethodParameterException.class)
-//    public void testOnPongMessage() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
-//        endpointsRegistry.addEndpoint(new TestEndpointWithOnPongError());
-//    }
-//
-//    @Test(description = "Test the expected exceptions for onError",
-//          expectedExceptions = WebSocketMethodParameterException.class)
-//    public void testOnError() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
-//        endpointsRegistry.addEndpoint(new TestEndpointWithOnError());
-//    }
+    @Test(description = "Test the expected exceptions for onClose",
+          expectedExceptions = WebSocketMethodParameterException.class)
+    public void testOnClose() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
+        endpointsRegistry.addEndpoint(new TestEndpointWithOnCloseError());
+    }
+
+    @Test(description = "Test the expected exceptions for onTextMessage",
+          expectedExceptions = WebSocketMethodParameterException.class)
+    public void testOnTextMessage() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
+        endpointsRegistry.addEndpoint(new TestEndpoinWithOnTextError());
+    }
+
+    @Test(description = "Test the expected exceptions for onBinaryMessage",
+          expectedExceptions = WebSocketMethodParameterException.class)
+    public void testOnBinaryMessage() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
+        endpointsRegistry.addEndpoint(new TestEndpointWithOnBinaryError());
+    }
+
+    @Test(description = "Test the expected exceptions for onPongMessage",
+          expectedExceptions = WebSocketMethodParameterException.class)
+    public void testOnPongMessage() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
+        endpointsRegistry.addEndpoint(new TestEndpointWithOnPongError());
+    }
+
+    @Test(description = "Test the expected exceptions for onError",
+          expectedExceptions = WebSocketMethodParameterException.class)
+    public void testOnError() throws WebSocketMethodParameterException, WebSocketEndpointAnnotationException {
+        endpointsRegistry.addEndpoint(new TestEndpointWithOnError());
+    }
 
 }

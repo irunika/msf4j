@@ -16,7 +16,7 @@
  *  under the License.
  */
 
-package org.wso2.msf4j.websocket.endpoints;
+package org.wso2.msf4j.websocket.endpoint.error;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +39,8 @@ import javax.websocket.server.ServerEndpoint;
  */
 
 @ServerEndpoint(value = "/chat/{name}")
-public class ChatAppEndpoint {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatAppEndpoint.class);
+public class TestEndpointWithOnError {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointWithOnError.class);
     private List<Session> sessions = new LinkedList<Session>();
 
     @OnOpen
@@ -68,7 +68,7 @@ public class ChatAppEndpoint {
     }
 
     @OnError
-    public void onError(Throwable throwable, Session session) {
+    public void onError(Throwable throwable, Session session, String errorValue) {
         LOGGER.error("Error found in method : " + throwable.toString());
     }
 

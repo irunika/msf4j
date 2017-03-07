@@ -26,8 +26,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.msf4j.MicroservicesRunner;
 import org.wso2.msf4j.util.client.websocket.WebSocketClient;
-import org.wso2.msf4j.websocket.endpoints.ChatAppEndpoint;
-import org.wso2.msf4j.websocket.endpoints.EchoEndpoint;
+import org.wso2.msf4j.websocket.endpoint.ChatAppEndpoint;
+import org.wso2.msf4j.websocket.endpoint.EchoEndpoint;
 import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
 import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
 
@@ -40,7 +40,7 @@ import javax.net.ssl.SSLException;
  * Check all the methods of the endpoint.
  */
 public class DeploymentTest {
-    private final static Logger logger = LoggerFactory.getLogger(DeploymentTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeploymentTest.class);
 
     private final String host = "localhost";
     private final String port = "8080";

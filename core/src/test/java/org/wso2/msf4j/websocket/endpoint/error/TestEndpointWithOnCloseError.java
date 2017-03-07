@@ -16,7 +16,7 @@
  *  under the License.
  */
 
-package org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints;
+package org.wso2.msf4j.websocket.endpoint.error;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,15 +38,15 @@ import javax.websocket.server.ServerEndpoint;
  * This provides a chat with multiple users.
  */
 
-@ServerEndpoint(value = "/test-error")
-public class TestEndpointWithOnOpenError {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointWithOnOpenError.class);
+@ServerEndpoint(value = "/chat/{name}")
+public class TestEndpointWithOnCloseError {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointWithOnCloseError.class);
     private List<Session> sessions = new LinkedList<Session>();
 
     @OnOpen
-    public void onOpen(@PathParam("name") String name, Session session, String errorValue) {
+    public void onOpen(@PathParam("name") String name, Session session) {
         sessions.add(session);
-        String msg = name + errorValue;
+        String msg = name + " connected to chat";
         LOGGER.info(msg);
         sendMessageToAll(msg);
     }
@@ -59,11 +59,9 @@ public class TestEndpointWithOnOpenError {
     }
 
     @OnClose
-    public void onClose(@PathParam("name") String name, CloseReason closeReason, Session session) {
-        LOGGER.info("Connection is closed with status code : " + closeReason.getCloseCode().getCode()
-                            + " On reason " + closeReason.getReasonPhrase());
+    public void onClose(@PathParam("name") String name, CloseReason closeReason, Session session, String errorValue) {
         sessions.remove(session);
-        String msg = name + " left the chat";
+        String msg = name + errorValue;
         sendMessageToAll(msg);
     }
 

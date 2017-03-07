@@ -16,7 +16,7 @@
  *  under the License.
  */
 
-package org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints;
+package org.wso2.msf4j.websocket.endpoint.error;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,7 @@ import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
+import javax.websocket.PongMessage;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -39,8 +40,8 @@ import javax.websocket.server.ServerEndpoint;
  */
 
 @ServerEndpoint(value = "/chat/{name}")
-public class TestEndpointWithOnCloseError {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointWithOnCloseError.class);
+public class TestEndpointWithOnPongError {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointWithOnPongError.class);
     private List<Session> sessions = new LinkedList<Session>();
 
     @OnOpen
@@ -58,10 +59,17 @@ public class TestEndpointWithOnCloseError {
         sendMessageToAll(msg);
     }
 
+    @OnMessage
+    public void onTextMessage(PongMessage pongMessage, Session session, String errorText) throws IOException {
+
+    }
+
     @OnClose
-    public void onClose(@PathParam("name") String name, CloseReason closeReason, Session session, String errorValue) {
+    public void onClose(@PathParam("name") String name, CloseReason closeReason, Session session) {
+        LOGGER.info("Connection is closed with status code : " + closeReason.getCloseCode().getCode()
+                            + " On reason " + closeReason.getReasonPhrase());
         sessions.remove(session);
-        String msg = name + errorValue;
+        String msg = name + " left the chat";
         sendMessageToAll(msg);
     }
 

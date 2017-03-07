@@ -21,7 +21,6 @@ package org.wso2.msf4j.internal.websocket;
 import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
 import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.nio.ByteBuffer;
@@ -46,16 +45,17 @@ public class EndpointValidator {
         this.webSocketEndpoint = webSocketEndpoint;
     }
 
-    public boolean validate(Object webSocketEndpoint) throws WebSocketEndpointAnnotationException, WebSocketMethodParameterException {
+    public boolean validate(Object webSocketEndpoint) throws WebSocketEndpointAnnotationException,
+                                                             WebSocketMethodParameterException {
         return validateURI(webSocketEndpoint) && validateOnStringMethod(webSocketEndpoint) &&
                 validateOnBinaryMethod(webSocketEndpoint) && validateOnPongMethod(webSocketEndpoint) &&
-                validateOnOpenMethod(webSocketEndpoint) && validateOnCloseMethod(webSocketEndpoint) && validateOnErrorMethod(webSocketEndpoint);
+                validateOnOpenMethod(webSocketEndpoint) && validateOnCloseMethod(webSocketEndpoint) &&
+                validateOnErrorMethod(webSocketEndpoint);
     }
 
     private boolean validateURI(Object webSocketEndpoint) throws WebSocketEndpointAnnotationException {
-        Annotation annotation = webSocketEndpoint.getClass().getAnnotation(ServerEndpoint.class);
-        if (annotation == null) {
-            throw new WebSocketEndpointAnnotationException("Server Endpoint annotation not defined.");
+        if (!webSocketEndpoint.getClass().isAnnotationPresent(ServerEndpoint.class)) {
+            throw new WebSocketEndpointAnnotationException("");
         }
         return true;
     }

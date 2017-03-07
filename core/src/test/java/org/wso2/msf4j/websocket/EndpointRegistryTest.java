@@ -29,8 +29,8 @@ import org.wso2.carbon.transport.http.netty.common.Constants;
 import org.wso2.msf4j.internal.router.PatternPathRouter;
 import org.wso2.msf4j.internal.websocket.EndpointDispatcher;
 import org.wso2.msf4j.internal.websocket.EndpointsRegistryImpl;
-import org.wso2.msf4j.websocket.endpoints.TestEndpoint;
-import org.wso2.msf4j.websocket.endpoints.TestEndpointWithError;
+import org.wso2.msf4j.websocket.endpoint.TestEndpoint;
+import org.wso2.msf4j.websocket.endpoint.TestEndpointWithError;
 import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
 import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
 

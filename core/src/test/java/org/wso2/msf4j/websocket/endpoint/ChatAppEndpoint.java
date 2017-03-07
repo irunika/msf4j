@@ -16,13 +16,12 @@
  *  under the License.
  */
 
-package org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints;
+package org.wso2.msf4j.websocket.endpoint;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 import javax.websocket.CloseReason;
@@ -40,8 +39,8 @@ import javax.websocket.server.ServerEndpoint;
  */
 
 @ServerEndpoint(value = "/chat/{name}")
-public class TestEndpointWithOnBinaryError {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointWithOnBinaryError.class);
+public class ChatAppEndpoint {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatAppEndpoint.class);
     private List<Session> sessions = new LinkedList<Session>();
 
     @OnOpen
@@ -55,14 +54,6 @@ public class TestEndpointWithOnBinaryError {
     @OnMessage
     public void onTextMessage(@PathParam("name") String name, String text, Session session) throws IOException {
         String msg = name + ":" + text;
-        LOGGER.info("Received Text : " + text + " from  " + name + session.getId());
-        sendMessageToAll(msg);
-    }
-
-    @OnMessage
-    public void onBinaryMessage(@PathParam("name") String name, ByteBuffer buffer, String text, Session session)
-            throws IOException {
-        String msg = name + ":" + text + buffer;
         LOGGER.info("Received Text : " + text + " from  " + name + session.getId());
         sendMessageToAll(msg);
     }

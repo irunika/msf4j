@@ -16,13 +16,12 @@
  *  under the License.
  */
 
-package org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints;
+package org.wso2.msf4j.websocket.endpoint.error;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 import javax.websocket.CloseReason;
@@ -39,23 +38,22 @@ import javax.websocket.server.ServerEndpoint;
  * This provides a chat with multiple users.
  */
 
-@ServerEndpoint(value = "/chat/{name}")
-public class TestEndpoinWithOnTextError {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpoinWithOnTextError.class);
+@ServerEndpoint(value = "/test-error")
+public class TestEndpointWithOnOpenError {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointWithOnOpenError.class);
     private List<Session> sessions = new LinkedList<Session>();
 
     @OnOpen
-    public void onOpen(@PathParam("name") String name, Session session) {
+    public void onOpen(@PathParam("name") String name, Session session, String errorValue) {
         sessions.add(session);
-        String msg = name + " connected to chat";
+        String msg = name + errorValue;
         LOGGER.info(msg);
         sendMessageToAll(msg);
     }
 
     @OnMessage
-    public void onTextMessage(@PathParam("name") String name, String text, Session session, ByteBuffer buffer)
-            throws IOException {
-        String msg = name + ":" + text + buffer;
+    public void onTextMessage(@PathParam("name") String name, String text, Session session) throws IOException {
+        String msg = name + ":" + text;
         LOGGER.info("Received Text : " + text + " from  " + name + session.getId());
         sendMessageToAll(msg);
     }

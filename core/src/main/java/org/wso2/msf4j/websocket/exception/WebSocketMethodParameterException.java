@@ -21,7 +21,7 @@ package org.wso2.msf4j.websocket.exception;
 /**
  * This is thrown when a issue found it WebSocket method parameters.
  */
-public class WebSocketMethodParameterException extends Exception{
+public class WebSocketMethodParameterException extends Exception {
 
     public WebSocketMethodParameterException(String message) {
         super(message);

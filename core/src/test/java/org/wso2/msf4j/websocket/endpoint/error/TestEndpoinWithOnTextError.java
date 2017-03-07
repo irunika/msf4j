@@ -16,12 +16,13 @@
  *  under the License.
  */
 
-package org.wso2.msf4j.websocket.endpoints.exceptionTestEndpoints;
+package org.wso2.msf4j.websocket.endpoint.error;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 import javax.websocket.CloseReason;
@@ -39,8 +40,8 @@ import javax.websocket.server.ServerEndpoint;
  */
 
 @ServerEndpoint(value = "/chat/{name}")
-public class TestEndpointWithOnError {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpointWithOnError.class);
+public class TestEndpoinWithOnTextError {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestEndpoinWithOnTextError.class);
     private List<Session> sessions = new LinkedList<Session>();
 
     @OnOpen
@@ -52,8 +53,9 @@ public class TestEndpointWithOnError {
     }
 
     @OnMessage
-    public void onTextMessage(@PathParam("name") String name, String text, Session session) throws IOException {
-        String msg = name + ":" + text;
+    public void onTextMessage(@PathParam("name") String name, String text, Session session, ByteBuffer buffer)
+            throws IOException {
+        String msg = name + ":" + text + buffer;
         LOGGER.info("Received Text : " + text + " from  " + name + session.getId());
         sendMessageToAll(msg);
     }
@@ -68,7 +70,7 @@ public class TestEndpointWithOnError {
     }
 
     @OnError
-    public void onError(Throwable throwable, Session session, String errorValue) {
+    public void onError(Throwable throwable, Session session) {
         LOGGER.error("Error found in method : " + throwable.toString());
     }
 
