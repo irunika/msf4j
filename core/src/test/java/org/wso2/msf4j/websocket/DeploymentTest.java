@@ -18,6 +18,8 @@
 
 package org.wso2.msf4j.websocket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -27,6 +29,7 @@ import org.wso2.msf4j.util.client.websocket.WebSocketClient;
 import org.wso2.msf4j.websocket.endpoints.ChatAppEndpoint;
 import org.wso2.msf4j.websocket.endpoints.EchoEndpoint;
 import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
+import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
 
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -37,6 +40,7 @@ import javax.net.ssl.SSLException;
  * Check all the methods of the endpoint.
  */
 public class DeploymentTest {
+    private final static Logger logger = LoggerFactory.getLogger(DeploymentTest.class);
 
     private final String host = "localhost";
     private final String port = "8080";
@@ -47,7 +51,8 @@ public class DeploymentTest {
     private MicroservicesRunner microservicesRunner = new MicroservicesRunner();
 
     @BeforeClass
-    public void setup() throws WebSocketEndpointAnnotationException {
+    public void setup() throws WebSocketEndpointAnnotationException, WebSocketMethodParameterException {
+        logger.info("\n--------------------------------WebSocket Deployment Test--------------------------------");
         microservicesRunner.deployWebSocketEndpoint(new EchoEndpoint());
         microservicesRunner.deployWebSocketEndpoint(new ChatAppEndpoint());
         microservicesRunner.start();

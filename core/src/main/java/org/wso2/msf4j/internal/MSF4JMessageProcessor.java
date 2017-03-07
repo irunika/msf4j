@@ -299,7 +299,7 @@ public class MSF4JMessageProcessor implements CarbonMessageProcessor {
                         }
                     }
             );
-            executeMethod(method, routableEndpoint.getDestination(), parameterList, session);
+            executeWebSocketMethod(method, routableEndpoint.getDestination(), parameterList, session);
             return true;
         } catch (Throwable throwable) {
             handleError(carbonMessage, throwable, routableEndpoint, session);
@@ -341,7 +341,7 @@ public class MSF4JMessageProcessor implements CarbonMessageProcessor {
                         }
                     }
             );
-            executeMethod(method, endpoint, parameterList, session);
+            executeWebSocketMethod(method, endpoint, parameterList, session);
         } catch (Throwable throwable) {
             handleError(textCarbonMessage, throwable, routableEndpoint, session);
         }
@@ -388,7 +388,7 @@ public class MSF4JMessageProcessor implements CarbonMessageProcessor {
                         }
                     }
             );
-            executeMethod(method, webSocketEndpoint, parameterList, session);
+            executeWebSocketMethod(method, webSocketEndpoint, parameterList, session);
         } catch (Throwable throwable) {
             handleError(binaryCarbonMessage, throwable, routableEndpoint, session);
         }
@@ -430,7 +430,7 @@ public class MSF4JMessageProcessor implements CarbonMessageProcessor {
                             }
                         }
                 );
-                executeMethod(method, webSocketEndpoint, parameterList, session);
+                executeWebSocketMethod(method, webSocketEndpoint, parameterList, session);
             }
         } catch (Throwable throwable) {
             handleError(closeCarbonMessage, throwable, routableEndpoint, session);
@@ -498,14 +498,17 @@ public class MSF4JMessageProcessor implements CarbonMessageProcessor {
                     }
             );
 
-            executeMethod(method, webSocketEndpoint, parameterList, session);
+            executeWebSocketMethod(method, webSocketEndpoint, parameterList, session);
         } else {
             log.error(throwable.toString());
         }
     }
 
-    private void executeMethod(Method method, Object webSocketEndpoint,
-                               List<Object> parameterList, Session session) {
+    /*
+    This is where all the methods are executed after finding the necessary parameters are needed.
+     */
+    private void executeWebSocketMethod(Method method, Object webSocketEndpoint,
+                                        List<Object> parameterList, Session session) {
         try {
             if (method.getReturnType() == String.class) {
                 String returnStr = (String) method.invoke(webSocketEndpoint, parameterList.toArray());

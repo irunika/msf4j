@@ -23,6 +23,9 @@ package org.wso2.msf4j.websocket.exception;
  */
 public class WebSocketEndpointAnnotationException extends Exception {
 
+    /**
+     * @param message message to be displayed to explain the issue.
+     */
     public WebSocketEndpointAnnotationException(String message) {
         super(message);
     }

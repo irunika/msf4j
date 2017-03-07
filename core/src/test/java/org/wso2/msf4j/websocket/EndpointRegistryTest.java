@@ -32,6 +32,7 @@ import org.wso2.msf4j.internal.websocket.EndpointsRegistryImpl;
 import org.wso2.msf4j.websocket.endpoints.TestEndpoint;
 import org.wso2.msf4j.websocket.endpoints.TestEndpointWithError;
 import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
+import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -55,14 +56,14 @@ public class EndpointRegistryTest {
 
     @BeforeClass
     public void onRegister() throws URISyntaxException {
-        logger.info("\n----------------WebSocket Registry Test----------------");
+        logger.info("\n--------------------------------WebSocket Registry Test--------------------------------");
         String uri = "/test";
         textCarbonMessage.setProperty(Constants.TO, uri);
     }
 
     @Test(description = "Testing the adding a correct endpoint to the registry.")
     public void addEndpoint() throws InvocationTargetException, IllegalAccessException, URISyntaxException,
-                                          WebSocketEndpointAnnotationException {
+                                     WebSocketEndpointAnnotationException, WebSocketMethodParameterException {
         endpointsRegistry.addEndpoint(testEndpoint);
         PatternPathRouter.RoutableDestination<Object> routableEndpoint =
                 endpointsRegistry.getRoutableEndpoint(textCarbonMessage);
@@ -88,8 +89,8 @@ public class EndpointRegistryTest {
         }
     }
 
-    @Test(description = "Testing the exception when server endpoint is not defined on a endpoint.")
-    public void testException() {
+    @Test(description = "Testing the annotation exception when server endpoint is not defined on a endpoint.")
+    public void testWebSocketAnnotationException() {
         try {
             WebSocketEndpoint testEndpoint = new TestEndpointWithError();
             endpointsRegistry.addEndpoint(testEndpoint);
@@ -97,6 +98,26 @@ public class EndpointRegistryTest {
         } catch (WebSocketEndpointAnnotationException e) {
             logger.error("Error occurred when adding endpoint : " + e.toString());
             Assert.assertTrue(true);
+        } catch (WebSocketMethodParameterException e) {
+            logger.error("Error occurred when adding endpoint : " + e.toString());
+            Assert.assertTrue(true);
         }
     }
+
+    @Test(description = "Testing the method parameter exception when server endpoint is not defined on a endpoint.")
+    public void testWebSocketMethodParameterException() {
+        try {
+            WebSocketEndpoint testEndpoint = new TestEndpointWithError();
+            endpointsRegistry.addEndpoint(testEndpoint);
+            Assert.assertTrue(false);
+        } catch (WebSocketEndpointAnnotationException e) {
+            logger.error("Error occurred when adding endpoint : " + e.toString());
+            Assert.assertTrue(true);
+        } catch (WebSocketMethodParameterException e) {
+            logger.error("Error occurred when adding endpoint : " + e.toString());
+            Assert.assertTrue(true);
+        }
+    }
+
+
 }

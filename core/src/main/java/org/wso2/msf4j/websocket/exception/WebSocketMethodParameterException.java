@@ -16,18 +16,14 @@
  *  under the License.
  */
 
-package org.wso2.msf4j.sample.websocket.echoserver.chatapp;
-
-import org.wso2.msf4j.MicroservicesRunner;
-import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
-import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
+package org.wso2.msf4j.websocket.exception;
 
 /**
- * This is the runner of the Fatjar. This should be configured as the main class in the pom.xml
+ * This is thrown when a issue found it WebSocket method parameters.
  */
-public class Application {
-    public static void main(String[] args)
-            throws WebSocketEndpointAnnotationException, WebSocketMethodParameterException {
-        new MicroservicesRunner().deployWebSocketEndpoint(new ChatAppEndpoint()).start();
+public class WebSocketMethodParameterException extends Exception{
+
+    public WebSocketMethodParameterException(String message) {
+        super(message);
     }
 }

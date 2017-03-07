@@ -30,6 +30,7 @@ import org.wso2.carbon.kernel.startupresolver.RequiredCapabilityListener;
 import org.wso2.msf4j.internal.DataHolder;
 import org.wso2.msf4j.websocket.WebSocketEndpoint;
 import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
+import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
 
 /**
  * OSGi Service component for WebSocket server. This will identify the endpoints which are trying to identify
@@ -63,7 +64,8 @@ public class WebSocketServerSC implements RequiredCapabilityListener {
         unbind = "removeEndpoint"
     )
 
-    protected void addEndpoint(WebSocketEndpoint endpoint) throws WebSocketEndpointAnnotationException {
+    protected void addEndpoint(WebSocketEndpoint endpoint)
+            throws WebSocketEndpointAnnotationException, WebSocketMethodParameterException {
         endpointsRegistry.addEndpoint(endpoint);
     }
 

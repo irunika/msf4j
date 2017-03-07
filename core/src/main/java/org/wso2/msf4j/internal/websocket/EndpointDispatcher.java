@@ -46,9 +46,6 @@ public class EndpointDispatcher {
      */
     public String getUri(Object webSocketEndpoint) throws WebSocketEndpointAnnotationException {
         ServerEndpoint serverEndpointAnnotation = webSocketEndpoint.getClass().getAnnotation(ServerEndpoint.class);
-        if (serverEndpointAnnotation == null) {
-            throw new WebSocketEndpointAnnotationException("ServerEndpoint is not declared");
-        }
         return serverEndpointAnnotation.value();
     }
 

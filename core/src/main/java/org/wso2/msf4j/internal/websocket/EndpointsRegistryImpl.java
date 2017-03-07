@@ -25,6 +25,7 @@ import org.wso2.carbon.transport.http.netty.common.Constants;
 import org.wso2.msf4j.internal.router.PatternPathRouter;
 import org.wso2.msf4j.websocket.WebSocketEndpointsRegistry;
 import org.wso2.msf4j.websocket.exception.WebSocketEndpointAnnotationException;
+import org.wso2.msf4j.websocket.exception.WebSocketMethodParameterException;
 
 import java.util.List;
 import java.util.Map;
@@ -62,12 +63,16 @@ public class EndpointsRegistryImpl implements WebSocketEndpointsRegistry {
      * Adding endpoints to the registry.
      * @param webSocketEndpoints to add.
      */
-    public void addEndpoint(Object... webSocketEndpoints) throws WebSocketEndpointAnnotationException {
+    public void addEndpoint(Object... webSocketEndpoints)
+            throws WebSocketEndpointAnnotationException, WebSocketMethodParameterException {
         for (Object endpoint: webSocketEndpoints) {
-            EndpointDispatcher dispatcher = new EndpointDispatcher();
-            webSocketEndpointMap.put(dispatcher.getUri(endpoint), endpoint);
-            updatePatternPathRouter();
-            LOGGER.info("Endpoint Registered : " + dispatcher.getUri(endpoint));
+            boolean validationApproved = new EndpointValidator().validate(webSocketEndpoints);
+            if (validationApproved) {
+                EndpointDispatcher dispatcher = new EndpointDispatcher();
+                webSocketEndpointMap.put(dispatcher.getUri(endpoint), endpoint);
+                updatePatternPathRouter();
+                LOGGER.info("Endpoint Registered : " + dispatcher.getUri(endpoint));
+            }
         }
     }
 
