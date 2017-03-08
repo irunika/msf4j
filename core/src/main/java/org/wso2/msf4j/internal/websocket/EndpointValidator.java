@@ -35,14 +35,7 @@ import javax.websocket.server.ServerEndpoint;
  */
 public class EndpointValidator {
 
-    private EndpointDispatcher dispatcher = new EndpointDispatcher();
-    private final Object webSocketEndpoint;
-
-    /**
-     * @param webSocketEndpoint Endpoint which need to be validated.
-     */
-    public EndpointValidator(Object webSocketEndpoint) {
-        this.webSocketEndpoint = webSocketEndpoint;
+    public EndpointValidator() {
     }
 
     public boolean validate(Object webSocketEndpoint) throws WebSocketEndpointAnnotationException,
@@ -54,7 +47,8 @@ public class EndpointValidator {
     }
 
     private boolean validateURI(Object webSocketEndpoint) throws WebSocketEndpointAnnotationException {
-        if (!webSocketEndpoint.getClass().isAnnotationPresent(ServerEndpoint.class)) {
+        EndpointDispatcher dispatcher = new EndpointDispatcher();
+        if (dispatcher.getUri(webSocketEndpoint) == null) {
             throw new WebSocketEndpointAnnotationException("");
         }
         return true;
@@ -64,6 +58,7 @@ public class EndpointValidator {
     Validate the String method found by Endpoint Dispatcher.
      */
     private boolean validateOnStringMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
+        EndpointDispatcher dispatcher = new EndpointDispatcher();
         Method method = dispatcher.getOnStringMessageMethod(webSocketEndpoint);
 
         //If method is not found that means that method is already validated.
@@ -92,6 +87,7 @@ public class EndpointValidator {
     Validate Binary method found by Endpoint Dispatcher
      */
     private boolean validateOnBinaryMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
+        EndpointDispatcher dispatcher = new EndpointDispatcher();
         Method method = dispatcher.getOnBinaryMessageMethod(webSocketEndpoint);
 
         //If method is not found that means that method is already validated.
@@ -120,6 +116,7 @@ public class EndpointValidator {
     Validate Pong Message found by Endpoint Dispatcher
     */
     private boolean validateOnPongMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
+        EndpointDispatcher dispatcher = new EndpointDispatcher();
         Method method = dispatcher.getOnPongMessageMethod(webSocketEndpoint);
 
         //If method is not found that means that method is already validated.
@@ -146,6 +143,7 @@ public class EndpointValidator {
     Validate On Open Method found by Dispatcher.
      */
     private boolean validateOnOpenMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
+        EndpointDispatcher dispatcher = new EndpointDispatcher();
         Method method = dispatcher.getOnOpenMethod(webSocketEndpoint);
 
         //If method is not found that means that method is already validated.
@@ -168,6 +166,7 @@ public class EndpointValidator {
     Validate On Close Method found by Dispatcher.
      */
     private boolean validateOnCloseMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
+        EndpointDispatcher dispatcher = new EndpointDispatcher();
         Method method = dispatcher.getOnCloseMethod(webSocketEndpoint);
 
         //If method is not found that means that method is already validated.
@@ -190,6 +189,7 @@ public class EndpointValidator {
     Validate on Error Method found by Dispatcher.
      */
     private boolean validateOnErrorMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
+        EndpointDispatcher dispatcher = new EndpointDispatcher();
         Method method = dispatcher.getOnErrorMethod(webSocketEndpoint);
 
         //If method is not found that means that method is already validated.

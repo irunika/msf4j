@@ -66,7 +66,7 @@ public class EndpointsRegistryImpl implements WebSocketEndpointsRegistry {
     public void addEndpoint(Object... webSocketEndpoints)
             throws WebSocketEndpointAnnotationException, WebSocketMethodParameterException {
         for (Object endpoint: webSocketEndpoints) {
-            boolean validationApproved = new EndpointValidator(webSocketEndpoints).validate(webSocketEndpoints);
+            boolean validationApproved = new EndpointValidator().validate(webSocketEndpoints);
             if (validationApproved) {
                 EndpointDispatcher dispatcher = new EndpointDispatcher();
                 webSocketEndpointMap.put(dispatcher.getUri(endpoint), endpoint);

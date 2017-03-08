@@ -60,8 +60,9 @@ limitations under the License.
 
     <test name="websocket-tests" preserve-order="true" parallel="false">
         <classes>
-            <class name="org.wso2.msf4j.websocket.EndpointRegistryTest"/>
-            <class name="org.wso2.msf4j.websocket.DeploymentTest"/>
+            <!--<class name="org.wso2.msf4j.websocket.EndpointRegistryTest"/>-->
+            <!--<class name="org.wso2.msf4j.websocket.DeploymentTest"/>-->
+            <class name="org.wso2.msf4j.websocket.ExceptionTesting"/>
         </classes>
     </test>
 
