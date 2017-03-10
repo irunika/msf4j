@@ -1,12 +1,12 @@
 /*
- *   Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *   WSO2 Inc. licenses this file to you under the Apache License,
- *   Version 2.0 (the "License"); you may not use this file except
- *   in compliance with the License.
- *   You may obtain a copy of the License at
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
@@ -31,13 +31,22 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 /**
- * This validates all the methods which are relevant to WebSocket Server endpoint.
+ * This validates all the methods which are relevant to WebSocket Server endpoint using JSR-356 specification.
  */
 public class EndpointValidator {
 
     public EndpointValidator() {
     }
 
+    /**
+     * Validate the whole WebSocket endpoint.
+     *
+     * @param webSocketEndpoint endpoint which should be validated.
+     * @return true if validation is completed without any error.
+     * @throws WebSocketEndpointAnnotationException if error on an annotation declaration occurred.
+     * @throws WebSocketMethodParameterException if the method parameters are invalid for a given method according
+     * to JSR-356 specification.
+     */
     public boolean validate(Object webSocketEndpoint) throws WebSocketEndpointAnnotationException,
                                                              WebSocketMethodParameterException {
         return validateURI(webSocketEndpoint) && validateOnStringMethod(webSocketEndpoint) &&
@@ -47,25 +56,20 @@ public class EndpointValidator {
     }
 
     private boolean validateURI(Object webSocketEndpoint) throws WebSocketEndpointAnnotationException {
-        EndpointDispatcher dispatcher = new EndpointDispatcher();
-        if (dispatcher.getUri(webSocketEndpoint) == null) {
-            throw new WebSocketEndpointAnnotationException("");
-        }
-        return true;
-    }
-
-    /*
-    Validate the String method found by Endpoint Dispatcher.
-     */
-    private boolean validateOnStringMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
-        EndpointDispatcher dispatcher = new EndpointDispatcher();
-        Method method = dispatcher.getOnStringMessageMethod(webSocketEndpoint);
-
-        //If method is not found that means that method is already validated.
-        if (method == null) {
+        if (webSocketEndpoint.getClass().isAnnotationPresent(ServerEndpoint.class)) {
             return true;
         }
+        throw new WebSocketEndpointAnnotationException("Server Endpoint is not defined.");
+    }
 
+    private boolean validateOnStringMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
+        EndpointDispatcher dispatcher = new EndpointDispatcher();
+        Method method;
+        if (dispatcher.getOnStringMessageMethod(webSocketEndpoint).isPresent()) {
+            method = dispatcher.getOnStringMessageMethod(webSocketEndpoint).get();
+        } else {
+            return true;
+        }
         boolean foundPrimaryString = false;
         for (Parameter parameter: method.getParameters()) {
             Class<?> paraType = parameter.getType();
@@ -83,18 +87,14 @@ public class EndpointValidator {
         return foundPrimaryString;
     }
 
-    /*
-    Validate Binary method found by Endpoint Dispatcher
-     */
     private boolean validateOnBinaryMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
         EndpointDispatcher dispatcher = new EndpointDispatcher();
-        Method method = dispatcher.getOnBinaryMessageMethod(webSocketEndpoint);
-
-        //If method is not found that means that method is already validated.
-        if (method == null) {
+        Method method;
+        if (dispatcher.getOnBinaryMessageMethod(webSocketEndpoint).isPresent()) {
+            method = dispatcher.getOnBinaryMessageMethod(webSocketEndpoint).get();
+        } else {
             return true;
         }
-
         boolean foundPrimaryBuffer = false;
         for (Parameter parameter: method.getParameters()) {
             Class<?> paraType = parameter.getType();
@@ -112,18 +112,14 @@ public class EndpointValidator {
         return foundPrimaryBuffer;
     }
 
-    /*
-    Validate Pong Message found by Endpoint Dispatcher
-    */
     private boolean validateOnPongMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
         EndpointDispatcher dispatcher = new EndpointDispatcher();
-        Method method = dispatcher.getOnPongMessageMethod(webSocketEndpoint);
-
-        //If method is not found that means that method is already validated.
-        if (method == null) {
+        Method method;
+        if (dispatcher.getOnPongMessageMethod(webSocketEndpoint).isPresent()) {
+            method = dispatcher.getOnPongMessageMethod(webSocketEndpoint).get();
+        } else {
             return true;
         }
-
         boolean foundPrimaryPong = false;
         for (Parameter parameter: method.getParameters()) {
             Class<?> paraType = parameter.getType();
@@ -139,18 +135,14 @@ public class EndpointValidator {
         return foundPrimaryPong;
     }
 
-    /*
-    Validate On Open Method found by Dispatcher.
-     */
     private boolean validateOnOpenMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
         EndpointDispatcher dispatcher = new EndpointDispatcher();
-        Method method = dispatcher.getOnOpenMethod(webSocketEndpoint);
-
-        //If method is not found that means that method is already validated.
-        if (method == null) {
+        Method method;
+        if (dispatcher.getOnOpenMethod(webSocketEndpoint).isPresent()) {
+            method = dispatcher.getOnOpenMethod(webSocketEndpoint).get();
+        } else {
             return true;
         }
-
         for (Parameter parameter: method.getParameters()) {
             Class<?> paraType = parameter.getType();
             if (paraType == String.class && parameter.getAnnotation(PathParam.class) == null) {
@@ -162,18 +154,14 @@ public class EndpointValidator {
         return true;
     }
 
-    /*
-    Validate On Close Method found by Dispatcher.
-     */
     private boolean validateOnCloseMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
         EndpointDispatcher dispatcher = new EndpointDispatcher();
-        Method method = dispatcher.getOnCloseMethod(webSocketEndpoint);
-
-        //If method is not found that means that method is already validated.
-        if (method == null) {
+        Method method;
+        if (dispatcher.getOnCloseMethod(webSocketEndpoint).isPresent()) {
+            method = dispatcher.getOnCloseMethod(webSocketEndpoint).get();
+        } else {
             return true;
         }
-
         for (Parameter parameter: method.getParameters()) {
             Class<?> paraType = parameter.getType();
             if (paraType == String.class && parameter.getAnnotation(PathParam.class) == null) {
@@ -185,18 +173,14 @@ public class EndpointValidator {
         return true;
     }
 
-    /*
-    Validate on Error Method found by Dispatcher.
-     */
     private boolean validateOnErrorMethod(Object webSocketEndpoint) throws WebSocketMethodParameterException {
         EndpointDispatcher dispatcher = new EndpointDispatcher();
-        Method method = dispatcher.getOnErrorMethod(webSocketEndpoint);
-
-        //If method is not found that means that method is already validated.
-        if (method == null) {
+        Method method;
+        if (dispatcher.getOnErrorMethod(webSocketEndpoint).isPresent()) {
+            method = dispatcher.getOnErrorMethod(webSocketEndpoint).get();
+        } else {
             return true;
         }
-
         boolean foundPrimaryThrowable = false;
         for (Parameter parameter: method.getParameters()) {
             Class<?> paraType = parameter.getType();
