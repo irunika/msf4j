@@ -1,12 +1,12 @@
 /*
- *   Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *   WSO2 Inc. licenses this file to you under the Apache License,
- *   Version 2.0 (the "License"); you may not use this file except
- *   in compliance with the License.
- *   You may obtain a copy of the License at
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
@@ -53,10 +53,13 @@ import javax.net.ssl.SSLException;
  */
 public class WebSocketClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketClient.class);
+    private static final Logger log = LoggerFactory.getLogger(WebSocketClient.class);
 
     private final String url;
 
+    /**
+     * @param url the URL which the client should connect.
+     */
     public WebSocketClient(String url) {
         this.url = System.getProperty("url", url);
     }
@@ -66,12 +69,14 @@ public class WebSocketClient {
     EventLoopGroup group;
 
     /**
+     * Do the handshake for the given url and return the state of the handshake.
+     *
      * @return true if the handshake is done properly.
      * @throws URISyntaxException throws if there is an error in the URI syntax.
      * @throws InterruptedException throws if the connecting the server is interrupted.
      */
     public boolean handhshake() throws InterruptedException, URISyntaxException, SSLException {
-        boolean isDone = false;
+        boolean isDone;
         URI uri = new URI(url);
         String scheme = uri.getScheme() == null ? "ws" : uri.getScheme();
         final String host = uri.getHost() == null ? "127.0.0.1" : uri.getHost();
@@ -89,7 +94,7 @@ public class WebSocketClient {
         }
 
         if (!"ws".equalsIgnoreCase(scheme) && !"wss".equalsIgnoreCase(scheme)) {
-            logger.error("Only WS(S) is supported.");
+            log.error("Only WS and WSS protocols are supported.");
             return false;
         }
 
@@ -134,22 +139,23 @@ public class WebSocketClient {
             channel = b.connect(uri.getHost(), port).sync().channel();
             isDone = handler.handshakeFuture().sync().isSuccess();
         } catch (Exception e) {
-            logger.error("Handshake unsuccessful : " + e.getMessage(), e);
+            log.error("Handshake unsuccessful: " + e.getMessage(), e);
             return false;
         }
 
-        logger.info("WebSocket Handshake successful : " + isDone);
+        log.info("WebSocket Handshake successful: " + isDone);
         Thread.sleep(5000);
         return isDone;
     }
 
     /**
      * Send text to the server.
+     *
      * @param text text need to be sent.
      */
     public void sendText(String text) {
         if (channel == null) {
-            logger.error("Channel is null. Cannot send text.");
+            log.error("Channel is null, cannot write data.");
             throw new NullPointerException("Cannot find the channel to write");
         }
         channel.writeAndFlush(new TextWebSocketFrame(text));
@@ -157,11 +163,12 @@ public class WebSocketClient {
 
     /**
      * Send binary data to server.
+     *
      * @param buf buffer containing the data need to be sent.
      */
     public void sendBinary(ByteBuffer buf) {
         if (channel == null) {
-            logger.error("Channel is null. Cannot send text.");
+            log.error("Channel is null, cannot write data.");
             throw new NullPointerException("Cannot find the channel to write");
         }
         channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(buf)));
@@ -169,11 +176,12 @@ public class WebSocketClient {
 
     /**
      * Send a pong message to the server.
+     *
      * @param buf content of the pong message to be sent.
      */
     public void sendPong(ByteBuffer buf) {
         if (channel == null) {
-            logger.error("Channel is null. Cannot send text.");
+            log.error("Channel is null, cannot write data.");
             throw new NullPointerException("Cannot find the channel to write");
         }
         channel.writeAndFlush(new PongWebSocketFrame(Unpooled.wrappedBuffer(buf)));
@@ -195,6 +203,8 @@ public class WebSocketClient {
 
     /**
      * Shutdown the WebSocket Client.
+     *
+     * @throws InterruptedException throws if interruption happened when closing the connection.
      */
     public void shutDown() throws InterruptedException {
         channel.writeAndFlush(new CloseWebSocketFrame());

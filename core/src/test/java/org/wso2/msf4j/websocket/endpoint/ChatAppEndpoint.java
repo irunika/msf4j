@@ -1,12 +1,12 @@
 /*
- *   Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *   WSO2 Inc. licenses this file to you under the Apache License,
- *   Version 2.0 (the "License"); you may not use this file except
- *   in compliance with the License.
- *   You may obtain a copy of the License at
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 import javax.websocket.CloseReason;
@@ -40,27 +41,32 @@ import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint(value = "/chat/{name}")
 public class ChatAppEndpoint {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatAppEndpoint.class);
+    private static final Logger log = LoggerFactory.getLogger(ChatAppEndpoint.class);
     private List<Session> sessions = new LinkedList<Session>();
 
     @OnOpen
     public void onOpen(@PathParam("name") String name, Session session) {
         sessions.add(session);
         String msg = name + " connected to chat";
-        LOGGER.info(msg);
+        log.info(msg);
         sendMessageToAll(msg);
     }
 
     @OnMessage
     public void onTextMessage(@PathParam("name") String name, String text, Session session) throws IOException {
         String msg = name + ":" + text;
-        LOGGER.info("Received Text : " + text + " from  " + name + session.getId());
+        log.info("Received Text : " + text + " from  " + name + session.getId());
         sendMessageToAll(msg);
+    }
+
+    @OnMessage
+    public void onBinaryMessage(ByteBuffer buffer, boolean isFinal, Session session) {
+
     }
 
     @OnClose
     public void onClose(@PathParam("name") String name, CloseReason closeReason, Session session) {
-        LOGGER.info("Connection is closed with status code : " + closeReason.getCloseCode().getCode()
+        log.info("Connection is closed with status code : " + closeReason.getCloseCode().getCode()
                             + " On reason " + closeReason.getReasonPhrase());
         sessions.remove(session);
         String msg = name + " left the chat";
@@ -69,7 +75,7 @@ public class ChatAppEndpoint {
 
     @OnError
     public void onError(Throwable throwable, Session session) {
-        LOGGER.error("Error found in method : " + throwable.toString());
+        log.error("Error found in method : " + throwable.toString());
     }
 
     private void sendMessageToAll(String message) {
@@ -78,7 +84,7 @@ public class ChatAppEndpoint {
                     try {
                         session.getBasicRemote().sendText(message);
                     } catch (IOException e) {
-                        LOGGER.error(e.toString());
+                        log.error(e.toString());
                     }
                 }
         );

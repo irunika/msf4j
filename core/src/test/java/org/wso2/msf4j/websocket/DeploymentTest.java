@@ -1,12 +1,12 @@
 /*
- *   Copyright (c) ${date}, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
- *   WSO2 Inc. licenses this file to you under the Apache License,
- *   Version 2.0 (the "License"); you may not use this file except
- *   in compliance with the License.
- *   You may obtain a copy of the License at
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing,
  *  software distributed under the License is distributed on an
@@ -44,6 +44,7 @@ public class DeploymentTest {
 
     private final String host = "localhost";
     private final String port = "8080";
+    private final int sleepTime = 100;
 
     private String echoUrl = "ws://" + host + ":" + port + "/echo";
     private String chatUrl = "ws://" + host + ":" + port + "/chat/";
@@ -67,7 +68,7 @@ public class DeploymentTest {
         //Test Echo String
         String textSent = "test";
         echoClient.sendText(textSent);
-        Thread.sleep(2000);
+        Thread.sleep(sleepTime);
         String textReceived = echoClient.getTextReceived();
         Assert.assertEquals(textReceived, textSent);
 
@@ -75,7 +76,7 @@ public class DeploymentTest {
         byte[] bytes = {1, 2, 3, 4, 5};
         ByteBuffer bufferSent = ByteBuffer.wrap(bytes);
         echoClient.sendBinary(bufferSent);
-        Thread.sleep(2000);
+        Thread.sleep(sleepTime);
         ByteBuffer bufferReceived = echoClient.getBufferReceived();
         Assert.assertEquals(bufferReceived, bufferSent);
 
@@ -83,7 +84,7 @@ public class DeploymentTest {
         byte[] pongBytes = {6, 7, 8, 9, 10};
         ByteBuffer pongBufferSent = ByteBuffer.wrap(pongBytes);
         echoClient.sendPong(pongBufferSent);
-        Thread.sleep(2000);
+        Thread.sleep(sleepTime);
         ByteBuffer pongBufferReceived = echoClient.getBufferReceived();
         Assert.assertEquals(pongBufferReceived, pongBufferSent);
 
@@ -103,20 +104,20 @@ public class DeploymentTest {
         //Check the handshake
         Assert.assertTrue(chatClient1.handhshake());
         Assert.assertTrue(chatClient2.handhshake());
-        Thread.sleep(2000);
+        Thread.sleep(sleepTime);
         textReceived = chatClient1.getTextReceived();
         Assert.assertEquals(textReceived, client2Name + " connected to chat");
 
         //Check the broadcast text
         String textSent = "test";
         chatClient1.sendText(textSent);
-        Thread.sleep(2000);
+        Thread.sleep(sleepTime);
         Assert.assertEquals(chatClient1.getTextReceived(), client1Name + ":" + textSent);
         Assert.assertEquals(chatClient2.getTextReceived(), client1Name + ":" + textSent);
 
         //Check close connection
         chatClient2.shutDown();
-        Thread.sleep(2000);
+        Thread.sleep(sleepTime);
         Assert.assertEquals(chatClient1.getTextReceived(), client2Name + " left the chat");
         chatClient1.shutDown();
     }
