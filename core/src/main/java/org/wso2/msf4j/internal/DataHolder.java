@@ -16,6 +16,7 @@
 package org.wso2.msf4j.internal;
 
 import org.osgi.framework.BundleContext;
+import org.wso2.msf4j.internal.websocket.EndpointsRegistryImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class DataHolder {
     private static final DataHolder instance = new DataHolder();
     private BundleContext bundleContext;
     private Map<String, MicroservicesRegistryImpl> microservicesRegistries = new HashMap<>();
+    private Map<String, EndpointsRegistryImpl> endpointsRegistries = new HashMap<>();
 
     private DataHolder() {
     }
@@ -46,6 +48,10 @@ public class DataHolder {
 
     public Map<String, MicroservicesRegistryImpl> getMicroservicesRegistries() {
         return microservicesRegistries;
+    }
+
+    public Map<String, EndpointsRegistryImpl> getEndpointsRegistries() {
+        return endpointsRegistries;
     }
 
 }

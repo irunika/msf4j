@@ -42,24 +42,12 @@ import java.util.stream.Collectors;
 public class EndpointsRegistryImpl implements WebSocketEndpointsRegistry {
 
     private static final Logger log = LoggerFactory.getLogger(EndpointsRegistryImpl.class);
-    private static final EndpointsRegistryImpl webSocketEndpointsRegistry = new EndpointsRegistryImpl();
     private final EndpointValidator validator = new EndpointValidator();
 
     // Map <uri, WebSocketEndpoint>
     private final Map<String, Object> webSocketEndpointMap = new ConcurrentHashMap<>();
     // PatterPathRouter<WebSocketEndpoint>
     private PatternPathRouter<Object> endpointPatternPathRouter = PatternPathRouter.create();
-
-    // Makes this class singleton.
-    private EndpointsRegistryImpl() {
-    }
-
-    /**
-     * @return this singleton instance of {@link EndpointsRegistryImpl}.
-     */
-    public static EndpointsRegistryImpl getInstance() {
-        return webSocketEndpointsRegistry;
-    }
 
     /**
      * Adding endpoints to the registry.

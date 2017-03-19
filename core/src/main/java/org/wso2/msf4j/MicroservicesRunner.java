@@ -58,7 +58,7 @@ public class MicroservicesRunner {
     private long startTime = System.currentTimeMillis();
     private boolean isStarted;
     private MicroservicesRegistryImpl msRegistry = new MicroservicesRegistryImpl();
-    private EndpointsRegistryImpl endpointsRegistry = EndpointsRegistryImpl.getInstance();
+    private EndpointsRegistryImpl endpointsRegistry = new EndpointsRegistryImpl();
 
     /**
      * Creates a MicroservicesRunner instance which will be used for deploying microservices. Allows specifying
@@ -182,6 +182,7 @@ public class MicroservicesRunner {
         for (int port : ports) {
             ListenerConfiguration listenerConfiguration = new ListenerConfiguration("netty-" + port, "0.0.0.0", port);
             DataHolder.getInstance().getMicroservicesRegistries().put(listenerConfiguration.getId(), msRegistry);
+            DataHolder.getInstance().getEndpointsRegistries().put(listenerConfiguration.getId(), endpointsRegistry);
             listenerConfigurations.add(listenerConfiguration);
         }
         transportsConfiguration.setListenerConfigurations(listenerConfigurations);
